@@ -22,7 +22,49 @@ const mb_parameter_descriptor_t device_parameters[] = {
         .param_size = sizeof(holding_reg_params_t),
         .param_opts = { .opt1 = 0, .opt2 = 0, .opt3 = 0 },
         .access = PAR_PERMS_READ
-    }
+    },
+    {
+        .cid = CID_SET_TEMP_LIMIT,
+        .param_key = "SetTempLimit",
+        .param_units = "0.1C",
+        .mb_slave_addr = 0x02,
+        .mb_param_type = MB_PARAM_HOLDING,
+        .mb_reg_start = 0x0013,
+        .mb_size = 1,
+        .param_offset = 0,
+        .param_type = PARAM_TYPE_U16,
+        .param_size = sizeof(uint16_t),
+        .param_opts = { .opt1 = 0, .opt2 = 0, .opt3 = 0 },
+        .access = PAR_PERMS_WRITE
+    },
+    {
+        .cid = CID_SET_HUMI_LIMIT,
+        .param_key = "SetHumiLimit",
+        .param_units = "0.1%",
+        .mb_slave_addr = 0x02,
+        .mb_param_type = MB_PARAM_HOLDING,
+        .mb_reg_start = 0x0014,
+        .mb_size = 1,
+        .param_offset = 0,
+        .param_type = PARAM_TYPE_U16,
+        .param_size = sizeof(uint16_t),
+        .param_opts = { .opt1 = 0, .opt2 = 0, .opt3 = 0 },
+        .access = PAR_PERMS_WRITE
+    },
+    {
+        .cid = CID_SET_STATUS,
+        .param_key = "SetStatus",
+        .param_units = "bin",
+        .mb_slave_addr = 0x02,
+        .mb_param_type = MB_PARAM_HOLDING,
+        .mb_reg_start = 0x0012,
+        .mb_size = 1,
+        .param_offset = 0,
+        .param_type = PARAM_TYPE_U16,
+        .param_size = sizeof(uint16_t),
+        .param_opts = { .opt1 = 0, .opt2 = 0, .opt3 = 0 },
+        .access = PAR_PERMS_WRITE
+    },
 };
 
 const uint16_t num_device_parameters = sizeof(device_parameters) / sizeof(device_parameters[0]);
@@ -45,6 +87,7 @@ esp_err_t modbus_master_init(void)
             .data_bits = UART_DATA_8_BITS,
             .stop_bits = UART_STOP_BITS_1,
             .parity = UART_PARITY_DISABLE,
+            .response_tout_ms = 500,
         }
     };
     err = mbc_master_create_serial(&comm, &master_handler);
@@ -120,8 +163,6 @@ esp_err_t modbus_master_read_all(gateway_data_t *out_data)
     err = mbc_master_get_parameter(master_handler, CID_DEV_DATA, (uint8_t *)&raw_regs, &type);
     if (err != ESP_OK) {
         ESP_LOGW(TAG, "从站数据读取失败: %s", esp_err_to_name(err));
-        // 当通信超时或异常中断时，重置协议栈内部状态，防止旧事件残留在 EventGroup 中
-        modbus_master_reset();
         return err;
     }
 
@@ -132,5 +173,48 @@ esp_err_t modbus_master_read_all(gateway_data_t *out_data)
     out_data->temp_limit  = (float)raw_regs.temp_limit / 10.0f;
     out_data->humi_limit  = (float)raw_regs.humi_limit / 10.0f;
 
+
+
     return ESP_OK;
+}
+
+esp_err_t modbus_master_write_temp_limit(float limit)
+{
+    if (master_handler == NULL) return ESP_ERR_INVALID_STATE;
+    uint16_t raw_val = (uint16_t)(limit * 10.0f + 0.5f);
+    uint8_t type = 0;
+    esp_err_t err = mbc_master_set_parameter(master_handler, CID_SET_TEMP_LIMIT, (uint8_t *)&raw_val, &type);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "写入温度上限成功: %.1f ℃ (寄存器值: %d)", limit, raw_val);
+    } else {
+        ESP_LOGE(TAG, "写入温度上限失败: %s", esp_err_to_name(err));
+    }
+    return err;
+}
+
+esp_err_t modbus_master_write_humi_limit(float limit)
+{
+    if (master_handler == NULL) return ESP_ERR_INVALID_STATE;
+    uint16_t raw_val = (uint16_t)(limit * 10.0f + 0.5f);
+    uint8_t type = 0;
+    esp_err_t err = mbc_master_set_parameter(master_handler, CID_SET_HUMI_LIMIT, (uint8_t *)&raw_val, &type);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "写入湿度下限成功: %.1f %% (寄存器值: %d)", limit, raw_val);
+    } else {
+        ESP_LOGE(TAG, "写入湿度下限失败: %s", esp_err_to_name(err));
+    }
+    return err;
+}
+
+esp_err_t modbus_master_write_status(uint16_t status)
+{
+    if (master_handler == NULL) return ESP_ERR_INVALID_STATE;
+    uint8_t type = 0;
+    esp_err_t err = mbc_master_set_parameter(master_handler, CID_SET_STATUS, (uint8_t *)&status, &type);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "写入设备状态成功: %d", status);
+    } else {
+        ESP_LOGE(TAG, "写入设备状态失败: %s", esp_err_to_name(err));
+    }
+    return err;
 }

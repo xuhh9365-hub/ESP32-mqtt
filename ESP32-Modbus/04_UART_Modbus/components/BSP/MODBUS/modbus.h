@@ -8,9 +8,17 @@
 #include "esp_err.h"
 #include "esp_modbus_master.h"
 
+
+
+
+
+
 // Modbus 特征 ID
 enum {
     CID_DEV_DATA = 0,   // 一次性批量读取所有从站寄存器 (0x0010 ~ 0x0014)
+    CID_SET_TEMP_LIMIT,
+    CID_SET_HUMI_LIMIT,
+    CID_SET_STATUS,
     CID_COUNT
 };
 
@@ -49,5 +57,14 @@ esp_err_t modbus_master_reset(void);
  * @return esp_err_t ESP_OK 表示采集成功
  */
 esp_err_t modbus_master_read_all(gateway_data_t *out_data);
+
+
+esp_err_t modbus_master_write_temp_limit(float limit);
+
+esp_err_t modbus_master_write_humi_limit(float limit);
+
+esp_err_t modbus_master_write_status(uint16_t status);
+
+
 
 #endif /* __MODBUS_H__ */
