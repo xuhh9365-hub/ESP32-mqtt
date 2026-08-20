@@ -1,0 +1,626 @@
+- generic [ref=e1]:
+  - link "跳至内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - navigation "侧边栏":
+        - generic:
+          - generic:
+            - generic:
+              - button "打开边栏"
+        - generic:
+          - generic:
+            - link "新聊天":
+              - /url: /
+          - generic:
+            - button "搜索"
+          - generic:
+            - button "最近聊天"
+        - generic:
+          - generic:
+            - button "打开“个人资料”菜单":
+              - generic:
+                - generic:
+                  - img "个人资料图片"
+      - generic [ref=e9]:
+        - heading "历史聊天记录" [level=2] [ref=e10]
+        - generic [ref=e11]:
+          - navigation "历史聊天记录" [ref=e12]:
+            - generic [ref=e15]:
+              - link "主页" [ref=e16] [cursor=pointer]:
+                - /url: /
+                - generic [ref=e17]: ChatGPT
+              - generic [ref=e18]:
+                - button "搜索" [ref=e19] [cursor=pointer]
+                - button "关闭边栏" [expanded] [ref=e22]
+            - list [ref=e26]:
+              - listitem [ref=e27]:
+                - link "新聊天 控制 Shift O" [ref=e138] [cursor=pointer]:
+                  - /url: /
+                  - generic [ref=e139]: 新聊天
+                  - generic [ref=e146]:
+                    - generic "控制" [ref=e147]:
+                      - generic [ref=e148]: Ctrl
+                      - text: +
+                    - generic "Shift" [ref=e149]: +
+                    - generic [ref=e151]: O
+              - listitem
+            - link "图片" [ref=e35] [cursor=pointer]:
+              - /url: /images
+            - link "文件库" [ref=e42] [cursor=pointer]:
+              - /url: /library?entry_point=sidebar
+            - link "插件" [ref=e49] [cursor=pointer]:
+              - /url: /plugins
+            - link "Codex" [ref=e153] [cursor=pointer]:
+              - /url: /codex
+            - generic [ref=e56]: 更多
+            - generic [ref=e164]:
+              - generic [ref=e165]:
+                - button [expanded] [ref=e166] [cursor=pointer]:
+                  - heading "项目" [level=2] [ref=e167]
+                - generic [ref=e168]:
+                  - button "整理聊天" [ref=e169] [cursor=pointer]
+                  - button "新项目" [ref=e173] [cursor=pointer]
+              - list [ref=e177]:
+                - listitem [ref=e178]:
+                  - generic [ref=e179]:
+                    - button "ESP32工业网关项目" [ref=e654] [cursor=pointer]
+                    - generic:
+                      - button "打开项目首页" [ref=e187] [cursor=pointer]
+                      - button "打开 ESP32工业网关项目 的项目选项" [ref=e191] [cursor=pointer]
+                - listitem [ref=e195]:
+                  - generic [ref=e196]:
+                    - button "电机运动控制系统考试备考" [ref=e665] [cursor=pointer]
+                    - generic:
+                      - button "打开项目首页" [ref=e204] [cursor=pointer]
+                      - button "打开 电机运动控制系统考试备考 的项目选项" [ref=e208] [cursor=pointer]
+                - listitem [ref=e212]:
+                  - generic [ref=e213]:
+                    - button "26年校赛电赛" [ref=e676] [cursor=pointer]
+                    - generic:
+                      - button "打开项目首页" [ref=e221] [cursor=pointer]
+                      - button "打开 26年校赛电赛 的项目选项" [ref=e225] [cursor=pointer]
+            - generic [ref=e229]:
+              - generic [ref=e230]:
+                - button [expanded] [ref=e231] [cursor=pointer]:
+                  - heading "聊天" [level=2] [ref=e232]
+                - generic [ref=e233]:
+                  - button "整理聊天" [ref=e234] [cursor=pointer]
+                  - link "新聊天" [ref=e238] [cursor=pointer]:
+                    - /url: /
+              - list [ref=e243]:
+                - listitem [ref=e716]:
+                  - link "ESP32 RS485 代码审查" [ref=e717] [cursor=pointer]:
+                    - /url: /c/6a7c27a1-6f08-83e8-8601-4b47c99b3065
+                    - generic [ref=e721]:
+                      - button "置顶 ESP32 RS485 代码审查" [ref=e722]
+                      - button "打开“ESP32 RS485 代码审查”的对话选项" [ref=e726]
+                - listitem [ref=e244]:
+                  - link "AI技能推荐与优先级" [ref=e245] [cursor=pointer]:
+                    - /url: /c/6a7b5497-3b34-83ee-95e6-21b51f2f572c
+                    - generic [ref=e249]:
+                      - button "置顶 AI技能推荐与优先级" [ref=e250]
+                      - button "打开“AI技能推荐与优先级”的对话选项" [ref=e254]
+                - listitem [ref=e258]:
+                  - link "AI Agent MCP 推荐" [ref=e259] [cursor=pointer]:
+                    - /url: /c/6a7b44a4-6624-83e8-9fdc-c1a64c5c6796
+                    - generic [ref=e263]:
+                      - button "置顶 AI Agent MCP 推荐" [ref=e264]
+                      - button "打开“AI Agent MCP 推荐”的对话选项" [ref=e268]
+                - listitem [ref=e272]:
+                  - link "昨天新闻摘要" [ref=e273] [cursor=pointer]:
+                    - /url: /c/6a7bddaf-6ba4-83ee-9681-ce59567ebf6c
+                    - generic [ref=e277]:
+                      - button "置顶 昨天新闻摘要" [ref=e278]
+                      - button "打开“昨天新闻摘要”的对话选项" [ref=e282]
+                - listitem [ref=e286]:
+                  - link "AI 求职工作流介绍" [ref=e287] [cursor=pointer]:
+                    - /url: /c/6a7a9ba0-7548-83e8-87c0-25e80ff5f88f
+                    - generic [ref=e291]:
+                      - button "置顶 AI 求职工作流介绍" [ref=e292]
+                      - button "打开“AI 求职工作流介绍”的对话选项" [ref=e296]
+                - listitem [ref=e300]:
+                  - link "TCP协议概述" [ref=e301] [cursor=pointer]:
+                    - /url: /c/6a797d9b-60d4-83ee-bc5f-9b3c714cc34c
+                    - generic [ref=e305]:
+                      - button "置顶 TCP协议概述" [ref=e306]
+                      - button "打开“TCP协议概述”的对话选项" [ref=e310]
+                - listitem [ref=e314]:
+                  - link "模型介绍 GPT-5.5-mini" [ref=e315] [cursor=pointer]:
+                    - /url: /c/6a78afdc-dc74-83ee-98d1-914b0537f6fa
+                    - generic [ref=e319]:
+                      - button "置顶 模型介绍 GPT-5.5-mini" [ref=e320]
+                      - button "打开“模型介绍 GPT-5.5-mini”的对话选项" [ref=e324]
+                - listitem [ref=e328]:
+                  - link "ESP32 DHT11 云端上传方案" [ref=e329] [cursor=pointer]:
+                    - /url: /c/6a76bdc7-b810-83e8-815e-868171a937e3
+                    - generic [ref=e333]:
+                      - button "置顶 ESP32 DHT11 云端上传方案" [ref=e334]
+                      - button "打开“ESP32 DHT11 云端上传方案”的对话选项" [ref=e338]
+                - listitem [ref=e342]:
+                  - link "模型版本解释" [ref=e343] [cursor=pointer]:
+                    - /url: /c/6a757c49-d668-83ee-b78d-c3b40ab71158
+                    - generic [ref=e347]:
+                      - button "置顶 模型版本解释" [ref=e348]
+                      - button "打开“模型版本解释”的对话选项" [ref=e352]
+                - listitem [ref=e356]:
+                  - link "嵌入式学习探讨" [ref=e357] [cursor=pointer]:
+                    - /url: /c/6a757f0a-9fa0-83ee-aff4-9bb2dbfba041
+                    - generic [ref=e361]:
+                      - button "置顶 嵌入式学习探讨" [ref=e362]
+                      - button "打开“嵌入式学习探讨”的对话选项" [ref=e366]
+                - listitem [ref=e370]:
+                  - link "C语言随机数降序排列" [ref=e371] [cursor=pointer]:
+                    - /url: /c/6a70437e-b5ec-83ee-806d-e4dc9114a7bd
+                    - generic [ref=e375]:
+                      - button "置顶 C语言随机数降序排列" [ref=e376]
+                      - button "打开“C语言随机数降序排列”的对话选项" [ref=e380]
+                - listitem [ref=e384]:
+                  - link "AI 助理上下文导入" [ref=e385] [cursor=pointer]:
+                    - /url: /c/6a6f694b-1004-83e8-a6f6-8a31024044fe
+                    - generic [ref=e389]:
+                      - button "置顶 AI 助理上下文导入" [ref=e390]
+                      - button "打开“AI 助理上下文导入”的对话选项" [ref=e394]
+                - listitem [ref=e398]:
+                  - link "OpenCode vs OpenClaw" [ref=e399] [cursor=pointer]:
+                    - /url: /c/6a6db32a-39ec-83ee-b4a0-cc2024ff07f7
+                    - generic [ref=e403]:
+                      - button "置顶 OpenCode vs OpenClaw" [ref=e404]
+                      - button "打开“OpenCode vs OpenClaw”的对话选项" [ref=e408]
+                - listitem [ref=e412]:
+                  - link "解码状态字段" [ref=e413] [cursor=pointer]:
+                    - /url: /c/6a6da395-d7cc-83e8-a640-f37f3fa8ba59
+                    - generic [ref=e417]:
+                      - button "置顶 解码状态字段" [ref=e418]
+                      - button "打开“解码状态字段”的对话选项" [ref=e422]
+                - listitem [ref=e426]:
+                  - link "面试背景确认" [ref=e427] [cursor=pointer]:
+                    - /url: /c/6a69c025-7fd4-83e8-bec9-1480b23fb77e
+                    - generic [ref=e431]:
+                      - button "置顶 面试背景确认" [ref=e432]
+                      - button "打开“面试背景确认”的对话选项" [ref=e436]
+                - listitem [ref=e440]:
+                  - link "电路分析与计算" [ref=e441] [cursor=pointer]:
+                    - /url: /c/6a661090-1cd0-83ee-98b5-45f6d9d9342b
+                    - generic [ref=e445]:
+                      - button "置顶 电路分析与计算" [ref=e446]
+                      - button "打开“电路分析与计算”的对话选项" [ref=e450]
+                - listitem [ref=e454]:
+                  - link "FreeRTOS内存管理学习" [ref=e455] [cursor=pointer]:
+                    - /url: /c/6a621437-e100-83ee-aceb-f41227c9225a
+                    - generic [ref=e459]:
+                      - button "置顶 FreeRTOS内存管理学习" [ref=e460]
+                      - button "打开“FreeRTOS内存管理学习”的对话选项" [ref=e464]
+                - listitem [ref=e468]:
+                  - link "FreeRTOS软件定时器学习" [ref=e469] [cursor=pointer]:
+                    - /url: /c/6a61ff80-8384-83e8-9fe3-58098418538d
+                    - generic [ref=e473]:
+                      - button "置顶 FreeRTOS软件定时器学习" [ref=e474]
+                      - button "打开“FreeRTOS软件定时器学习”的对话选项" [ref=e478]
+                - listitem [ref=e482]:
+                  - link "闲鱼自动发货设置" [ref=e483] [cursor=pointer]:
+                    - /url: /c/6a5b8ad6-e7a8-83ee-8f70-329ab1523cec
+                    - generic [ref=e487]:
+                      - button "置顶 闲鱼自动发货设置" [ref=e488]
+                      - button "打开“闲鱼自动发货设置”的对话选项" [ref=e492]
+                - listitem [ref=e496]:
+                  - link "闲鱼小店经营指南" [ref=e497] [cursor=pointer]:
+                    - /url: /c/6a59c6a4-c5fc-83ee-97e8-e194e4f996d5
+                    - generic [ref=e501]:
+                      - button "置顶 闲鱼小店经营指南" [ref=e502]
+                      - button "打开“闲鱼小店经营指南”的对话选项" [ref=e506]
+                - listitem [ref=e510]:
+                  - link "STM32F103C8T6原理图分析" [ref=e511] [cursor=pointer]:
+                    - /url: /c/6a58cbb2-8530-83ee-a677-5b270f5a66ce
+                    - generic [ref=e515]:
+                      - button "置顶 STM32F103C8T6原理图分析" [ref=e516]
+                      - button "打开“STM32F103C8T6原理图分析”的对话选项" [ref=e520]
+                - listitem [ref=e524]:
+                  - link "Proteus仿真可行性分析" [ref=e525] [cursor=pointer]:
+                    - /url: /c/6a58944e-5408-83ee-8f37-9f0f601fec20
+                    - generic [ref=e529]:
+                      - button "置顶 Proteus仿真可行性分析" [ref=e530]
+                      - button "打开“Proteus仿真可行性分析”的对话选项" [ref=e534]
+                - listitem [ref=e538]:
+                  - link "Provider response timeout" [ref=e539] [cursor=pointer]:
+                    - /url: /c/6a534538-42ec-83ee-b429-1fe9b1390cb3
+                    - generic [ref=e543]:
+                      - button "置顶 Provider response timeout" [ref=e544]
+                      - button "打开“Provider response timeout”的对话选项" [ref=e548]
+                - listitem [ref=e552]:
+                  - link "CC Switch含义解析" [ref=e553] [cursor=pointer]:
+                    - /url: /c/6a534b15-f8b8-83e8-a4a2-1c3e00446a9c
+                    - generic [ref=e557]:
+                      - button "置顶 CC Switch含义解析" [ref=e558]
+                      - button "打开“CC Switch含义解析”的对话选项" [ref=e562]
+                - listitem [ref=e566]:
+                  - link "ChatGPT会员充值方案" [ref=e567] [cursor=pointer]:
+                    - /url: /c/6a437a0f-a5e4-83ee-b38d-e8786f0eb854
+                    - generic [ref=e571]:
+                      - button "置顶 ChatGPT会员充值方案" [ref=e572]
+                      - button "打开“ChatGPT会员充值方案”的对话选项" [ref=e576]
+                - listitem [ref=e580]:
+                  - link "Codex vs OpenCode区别" [ref=e581] [cursor=pointer]:
+                    - /url: /c/6a427f32-c618-83ee-8288-323e1270ba83
+                    - generic [ref=e585]:
+                      - button "置顶 Codex vs OpenCode区别" [ref=e586]
+                      - button "打开“Codex vs OpenCode区别”的对话选项" [ref=e590]
+                - listitem [ref=e594]:
+                  - link "FreeRTOS项目练手建议" [ref=e595] [cursor=pointer]:
+                    - /url: /c/6a3fc0b3-065c-83ee-b1bd-2c39be9ebd05
+                    - generic [ref=e599]:
+                      - button "置顶 FreeRTOS项目练手建议" [ref=e600]
+                      - button "打开“FreeRTOS项目练手建议”的对话选项" [ref=e604]
+                - listitem [ref=e608]:
+                  - link "Codex接入其他模型API" [ref=e609] [cursor=pointer]:
+                    - /url: /c/6a377358-2464-83ee-a9b0-bc713a1d75bf
+                    - generic [ref=e613]:
+                      - button "置顶 Codex接入其他模型API" [ref=e614]
+                      - button "打开“Codex接入其他模型API”的对话选项" [ref=e618]
+          - button "xu hh 免费版，打开“个人资料”菜单" [ref=e67] [cursor=pointer]:
+            - generic [ref=e68]:
+              - img "个人资料图片" [ref=e636]
+              - generic [ref=e71]:
+                - generic [ref=e72]: xu hh
+                - generic [ref=e74]: 免费版
+            - button "升级" [ref=e638]
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - banner:
+          - generic [ref=e83]:
+            - button "升级" [ref=e643] [cursor=pointer]
+            - generic [ref=e84]:
+              - button "分享" [ref=e733] [cursor=pointer]
+              - button "更多" [ref=e738] [cursor=pointer]
+      - main [ref=e95]:
+        - generic [ref=e742]:
+          - generic [ref=e744]:
+            - generic [ref=e745]:
+              - generic [ref=e747]:
+                - heading "你说：" [level=4] [ref=e748]
+                - generic [ref=e750]:
+                  - generic [ref=e751]: 请帮我审查以下 ESP32 RS485 通信项目的代码，指出所有问题（Bug、安全、性能、代码风格等）并给出改进建议。项目使用 ESP-IDF + FreeRTOS。
+                  - generic [ref=e756]:
+                    - group "你的消息操作":
+                      - button "复制消息"
+                      - button "分享提示"
+                      - button "编辑消息"
+              - generic [ref=e759]:
+                - heading "ChatGPT 说：" [level=4] [ref=e760]
+                - generic [ref=e766]:
+                  - paragraph [ref=e767]:
+                    - text: 可以，我可以按
+                    - strong [ref=e768]: 嵌入式工程代码审查标准
+                    - text: 来审查你的 ESP32 RS485 项目。
+                  - paragraph [ref=e769]: 请把以下内容发给我（越完整越好）：
+                  - heading "1. 主要代码文件" [level=3] [ref=e770]
+                  - paragraph [ref=e771]: 至少需要：
+                  - generic [ref=e780]:
+                    - button "复制" [ref=e781] [cursor=pointer]
+                    - code [ref=e790]: main/ ├── main.c / app_main.c ├── rs485.c ├── rs485.h ├── uart.c ├── uart.h ├── modbus.c（如果有） ├── freertos task相关代码
+                  - paragraph [ref=e791]: 如果项目比较大，可以分几次发。
+                  - separator [ref=e792]
+                  - heading "2. 工程信息" [level=3] [ref=e793]
+                  - paragraph [ref=e794]: 告诉我：
+                  - list [ref=e795]:
+                    - listitem [ref=e796]:
+                      - paragraph [ref=e797]: ESP32 型号：
+                      - list [ref=e798]:
+                        - listitem [ref=e799]:
+                          - paragraph [ref=e800]: ESP32-S3？（你之前提到 正点原子 ESP32-S3，如果还是这个确认一下）
+                    - listitem [ref=e801]:
+                      - paragraph [ref=e802]: ESP-IDF版本：
+                      - list [ref=e803]:
+                        - listitem [ref=e804]:
+                          - paragraph [ref=e805]: 例如 ESP-IDF v5.2 / v5.3
+                    - listitem [ref=e806]:
+                      - paragraph [ref=e807]: RS485芯片：
+                      - list [ref=e808]:
+                        - listitem [ref=e809]:
+                          - paragraph [ref=e810]: MAX3485？
+                        - listitem [ref=e811]:
+                          - paragraph [ref=e812]: SP3485？
+                        - listitem [ref=e813]:
+                          - paragraph [ref=e814]: MAX485？
+                    - listitem [ref=e815]:
+                      - paragraph [ref=e816]: 通信协议：
+                      - list [ref=e817]:
+                        - listitem [ref=e818]:
+                          - paragraph [ref=e819]: Modbus RTU？
+                        - listitem [ref=e820]:
+                          - paragraph [ref=e821]: 自定义协议？
+                    - listitem [ref=e822]:
+                      - paragraph [ref=e823]: 波特率：
+                      - list [ref=e824]:
+                        - listitem [ref=e825]:
+                          - paragraph [ref=e826]: 9600？
+                        - listitem [ref=e827]:
+                          - paragraph [ref=e828]: 115200？
+                    - listitem [ref=e829]:
+                      - paragraph [ref=e830]: 是否使用：
+                      - list [ref=e831]:
+                        - listitem [ref=e832]:
+                          - paragraph [ref=e833]: UART DMA？
+                        - listitem [ref=e834]:
+                          - paragraph [ref=e835]: UART Event Queue？
+                        - listitem [ref=e836]:
+                          - paragraph [ref=e837]: FreeRTOS Queue？
+                        - listitem [ref=e838]:
+                          - paragraph [ref=e839]: Semaphore？
+                        - listitem [ref=e840]:
+                          - paragraph [ref=e841]: 软件定时器？
+                  - separator [ref=e842]
+                  - heading "3. 我会重点检查这些方面" [level=3] [ref=e843]
+                  - heading "一、硬件驱动层" [level=4] [ref=e844]
+                  - paragraph [ref=e845]: 例如：
+                  - list [ref=e846]:
+                    - listitem [ref=e847]:
+                      - paragraph [ref=e848]: DE/RE方向控制是否正确
+                  - paragraph [ref=e849]: 典型问题：
+                  - generic [ref=e855]:
+                    - generic [ref=e857]:
+                      - generic [ref=e858]: C
+                      - button "复制" [ref=e862] [cursor=pointer]
+                    - code [ref=e875]: gpio_set_level(RS485_DE,1); uart_write_bytes(...); gpio_set_level(RS485_DE,0);
+                  - paragraph [ref=e876]: 这里可能存在：
+                  - list [ref=e877]:
+                    - listitem [ref=e878]:
+                      - paragraph [ref=e879]: 数据还没发送完成就切回接收
+                    - listitem [ref=e880]:
+                      - paragraph [ref=e881]: 丢最后几个字节
+                  - paragraph [ref=e882]: 正确应该考虑：
+                  - generic [ref=e888]:
+                    - generic [ref=e890]:
+                      - generic [ref=e891]: C
+                      - button "复制" [ref=e895] [cursor=pointer]
+                    - code [ref=e908]: uart_wait_tx_done()
+                  - separator [ref=e909]
+                  - heading "二、UART配置问题" [level=4] [ref=e910]
+                  - paragraph [ref=e911]: 检查：
+                  - list [ref=e912]:
+                    - listitem [ref=e913]:
+                      - paragraph [ref=e914]: UART参数是否合理
+                  - paragraph [ref=e915]: 例如：
+                  - generic [ref=e921]:
+                    - generic [ref=e923]:
+                      - generic [ref=e924]: C
+                      - button "复制" [ref=e928] [cursor=pointer]
+                    - code [ref=e941]: "uart_config_t uart_config={ .baud_rate=9600, .data_bits=UART_DATA_8_BITS, .parity=UART_PARITY_DISABLE, .stop_bits=UART_STOP_BITS_1, };"
+                  - paragraph [ref=e942]: 检查：
+                  - list [ref=e943]:
+                    - listitem [ref=e944]:
+                      - paragraph [ref=e945]: 是否开启硬件流控
+                    - listitem [ref=e946]:
+                      - paragraph [ref=e947]: RX buffer大小
+                    - listitem [ref=e948]:
+                      - paragraph [ref=e949]: timeout设置
+                    - listitem [ref=e950]:
+                      - paragraph [ref=e951]: 中断配置
+                  - separator [ref=e952]
+                  - heading "三、FreeRTOS设计" [level=4] [ref=e953]
+                  - paragraph [ref=e954]: 重点看：
+                  - heading "Task设计" [level=3] [ref=e955]
+                  - paragraph [ref=e956]: 例如：
+                  - generic [ref=e962]:
+                    - generic [ref=e964]:
+                      - generic [ref=e965]: C
+                      - button "复制" [ref=e969] [cursor=pointer]
+                    - code [ref=e982]: "while(1) { rs485_read(); vTaskDelay(10/portTICK_PERIOD_MS); }"
+                  - paragraph [ref=e983]: 可能问题：
+                  - list [ref=e984]:
+                    - listitem [ref=e985]:
+                      - paragraph [ref=e986]: 阻塞CPU
+                    - listitem [ref=e987]:
+                      - paragraph [ref=e988]: 延迟不准确
+                    - listitem [ref=e989]:
+                      - paragraph [ref=e990]: 丢包
+                  - paragraph [ref=e991]: 更推荐：
+                  - generic [ref=e1000]:
+                    - button "复制" [ref=e1001] [cursor=pointer]
+                    - code [ref=e1010]: UART ISR | ↓ Queue | ↓ RS485 Task | ↓ Protocol Parse Task
+                  - separator [ref=e1011]
+                  - heading "四、通信可靠性" [level=4] [ref=e1012]
+                  - paragraph [ref=e1013]: 检查：
+                  - heading "1. 粘包" [level=3] [ref=e1014]
+                  - paragraph [ref=e1015]: 例如：
+                  - paragraph [ref=e1016]: 收到：
+                  - generic [ref=e1025]:
+                    - button "复制" [ref=e1026] [cursor=pointer]
+                    - code [ref=e1035]: 01 03 02 00 64
+                  - paragraph [ref=e1036]: 下一帧：
+                  - generic [ref=e1045]:
+                    - button "复制" [ref=e1046] [cursor=pointer]
+                    - code [ref=e1055]: 01 03 02 00 65
+                  - paragraph [ref=e1056]: 如果直接：
+                  - generic [ref=e1062]:
+                    - generic [ref=e1064]:
+                      - generic [ref=e1065]: C
+                      - button "复制" [ref=e1069] [cursor=pointer]
+                    - code [ref=e1082]: buffer[index++]=data;
+                  - paragraph [ref=e1083]: 容易变成：
+                  - generic [ref=e1092]:
+                    - button "复制" [ref=e1093] [cursor=pointer]
+                    - code [ref=e1102]: 01 03 02 00 64 01 03 02 00 65
+                  - paragraph [ref=e1103]: 需要：
+                  - list [ref=e1104]:
+                    - listitem [ref=e1105]:
+                      - paragraph [ref=e1106]: 帧头
+                    - listitem [ref=e1107]:
+                      - paragraph [ref=e1108]: 长度
+                    - listitem [ref=e1109]:
+                      - paragraph [ref=e1110]: CRC
+                    - listitem [ref=e1111]:
+                      - paragraph [ref=e1112]: 超时判断
+                  - separator [ref=e1113]
+                  - heading "2. CRC校验" [level=3] [ref=e1114]
+                  - paragraph [ref=e1115]: 检查：
+                  - list [ref=e1116]:
+                    - listitem [ref=e1117]:
+                      - paragraph [ref=e1118]: CRC16算法
+                    - listitem [ref=e1119]:
+                      - paragraph [ref=e1120]: 高低字节顺序
+                  - paragraph [ref=e1121]: Modbus常见：
+                  - generic [ref=e1130]:
+                    - button "复制" [ref=e1131] [cursor=pointer]
+                    - code [ref=e1140]: CRC Low CRC High
+                  - paragraph [ref=e1141]: 很多新人写反。
+                  - separator [ref=e1142]
+                  - heading "3. 数据竞争" [level=3] [ref=e1143]
+                  - paragraph [ref=e1144]: 例如：
+                  - paragraph [ref=e1145]: "Task1:"
+                  - generic [ref=e1151]:
+                    - generic [ref=e1153]:
+                      - generic [ref=e1154]: C
+                      - button "复制" [ref=e1158] [cursor=pointer]
+                    - code [ref=e1171]: rs485_buffer[i]=data;
+                  - paragraph [ref=e1172]: "Task2:"
+                  - generic [ref=e1178]:
+                    - generic [ref=e1180]:
+                      - generic [ref=e1181]: C
+                      - button "复制" [ref=e1185] [cursor=pointer]
+                    - code [ref=e1198]: printf("%s",rs485_buffer);
+                  - paragraph [ref=e1199]: 没有：
+                  - list [ref=e1200]:
+                    - listitem [ref=e1201]:
+                      - paragraph [ref=e1202]: mutex
+                    - listitem [ref=e1203]:
+                      - paragraph [ref=e1204]: queue
+                    - listitem [ref=e1205]:
+                      - paragraph [ref=e1206]: 临界区
+                  - paragraph [ref=e1207]: 可能出现随机Bug。
+                  - separator [ref=e1208]
+                  - heading "五、内存安全" [level=4] [ref=e1209]
+                  - paragraph [ref=e1210]: 检查：
+                  - heading "数组越界" [level=3] [ref=e1211]
+                  - paragraph [ref=e1212]: 例如：
+                  - generic [ref=e1218]:
+                    - generic [ref=e1220]:
+                      - generic [ref=e1221]: C
+                      - button "复制" [ref=e1225] [cursor=pointer]
+                    - code [ref=e1238]: uint8_t rx_buf[128]; rx_buf[index++]=data;
+                  - paragraph [ref=e1239]: 如果：
+                  - generic [ref=e1248]:
+                    - button "复制" [ref=e1249] [cursor=pointer]
+                    - code [ref=e1258]: index=128
+                  - paragraph [ref=e1259]: 直接写爆。
+                  - separator [ref=e1260]
+                  - heading "六、性能问题" [level=3] [ref=e1261]
+                  - paragraph [ref=e1262]: 检查：
+                  - list [ref=e1263]:
+                    - listitem [ref=e1264]:
+                      - paragraph [ref=e1265]: 是否大量printf
+                  - paragraph [ref=e1266]: 例如：
+                  - generic [ref=e1272]:
+                    - generic [ref=e1274]:
+                      - generic [ref=e1275]: C
+                      - button "复制" [ref=e1279] [cursor=pointer]
+                    - code [ref=e1292]: printf("rx=%02x\n",data);
+                  - paragraph [ref=e1293]: ESP32上串口打印很慢。
+                  - separator [ref=e1294]
+                  - heading "七、ESP-IDF规范" [level=3] [ref=e1295]
+                  - paragraph [ref=e1296]: 检查：
+                  - paragraph [ref=e1297]: 是否正确使用：
+                  - paragraph [ref=e1298]: ESP-IDF v5：
+                  - paragraph [ref=e1299]: 推荐：
+                  - generic [ref=e1305]:
+                    - generic [ref=e1307]:
+                      - generic [ref=e1308]: C
+                      - button "复制" [ref=e1312] [cursor=pointer]
+                    - code [ref=e1325]: ESP_ERROR_CHECK()
+                  - paragraph [ref=e1326]: 例如：
+                  - generic [ref=e1332]:
+                    - generic [ref=e1334]:
+                      - generic [ref=e1335]: C
+                      - button "复制" [ref=e1339] [cursor=pointer]
+                    - code [ref=e1352]: "esp_err_t ret; ret=uart_driver_install(); if(ret!=ESP_OK) { return; }"
+                  - paragraph [ref=e1353]: 改：
+                  - generic [ref=e1359]:
+                    - generic [ref=e1361]:
+                      - generic [ref=e1362]: C
+                      - button "复制" [ref=e1366] [cursor=pointer]
+                    - code [ref=e1379]: ESP_ERROR_CHECK(uart_driver_install());
+                  - separator [ref=e1380]
+                  - heading "八、工程结构" [level=3] [ref=e1381]
+                  - paragraph [ref=e1382]: 我会评价：
+                  - paragraph [ref=e1383]: 目前代码属于：
+                  - generic [ref=e1392]:
+                    - button "复制" [ref=e1393] [cursor=pointer]
+                    - code [ref=e1402]: 能跑Demo ↓ 工程级 ↓ 工业通信
+                  - paragraph [ref=e1403]: 哪个阶段。
+                  - separator [ref=e1404]
+                  - heading "审查输出格式我会给你：" [level=3] [ref=e1405]
+                  - paragraph [ref=e1406]: 例如：
+                  - generic [ref=e1408]:
+                    - table [ref=e1409]:
+                      - rowgroup [ref=e1410]:
+                        - row [ref=e1411]:
+                          - columnheader "等级" [ref=e1412]
+                          - columnheader "位置" [ref=e1413]
+                          - columnheader "问题" [ref=e1414]
+                          - columnheader "影响" [ref=e1415]
+                          - columnheader "修改建议" [ref=e1416]
+                      - rowgroup [ref=e1417]:
+                        - row [ref=e1418]:
+                          - cell "严重" [ref=e1419]
+                          - cell "rs485_send()" [ref=e1420]
+                          - cell "DE提前关闭" [ref=e1421]
+                          - cell "丢帧" [ref=e1422]
+                          - cell "增加uart_wait_tx_done" [ref=e1423]
+                        - row [ref=e1424]:
+                          - cell "严重" [ref=e1425]
+                          - cell "rx_buffer" [ref=e1426]
+                          - cell "无边界保护" [ref=e1427]
+                          - cell "内存破坏" [ref=e1428]
+                          - cell "增加长度判断" [ref=e1429]
+                        - row [ref=e1430]:
+                          - cell "中等" [ref=e1431]
+                          - cell "task delay" [ref=e1432]
+                          - cell "轮询接收" [ref=e1433]
+                          - cell "实时性差" [ref=e1434]
+                          - cell "改event queue" [ref=e1435]
+                        - row [ref=e1436]:
+                          - cell "轻微" [ref=e1437]
+                          - cell "命名" [ref=e1438]
+                          - cell "变量不规范" [ref=e1439]
+                          - cell "维护困难" [ref=e1440]
+                          - cell "统一命名" [ref=e1441]
+                    - generic [ref=e1443]:
+                      - button "复制表格"
+                  - paragraph [ref=e1444]: 并且会给：
+                  - list [ref=e1445]:
+                    - listitem [ref=e1446]:
+                      - paragraph [ref=e1447]:
+                        - strong [ref=e1448]: 必须修改Bug
+                    - listitem [ref=e1449]:
+                      - paragraph [ref=e1450]:
+                        - strong [ref=e1451]: 工业项目建议修改
+                    - listitem [ref=e1452]:
+                      - paragraph [ref=e1453]:
+                        - strong [ref=e1454]: 代码优化建议
+                    - listitem [ref=e1455]:
+                      - paragraph [ref=e1456]:
+                        - strong [ref=e1457]: 后续可以升级的架构（Modbus网关方向）
+                  - paragraph [ref=e1458]: 你直接把代码贴上来即可。你这个项目方向（ESP32-S3 + MAX3485 + FreeRTOS）其实很适合做工业网关，我会按工业通信设备标准帮你看，不只是看语法。
+            - generic [ref=e1459]: ChatGPT 也可能会犯错。请核查重要信息。
+          - generic:
+            - button [ref=e1469] [cursor=pointer]
+            - generic [ref=e1478]:
+              - generic [ref=e1481]:
+                - button "展开" [ref=e1482] [cursor=pointer]
+                - button "添加文件等" [ref=e1485] [cursor=pointer]
+                - textbox "与 ChatGPT 聊天" [active] [ref=e646]:
+                  - paragraph [ref=e647]:
+                    - text: "s/BSP/CMakeLists.txt =====set(src_dirs RS485 UART KEY LED)set(include_dirs RS485 UART KEY LED)set(requires driver)idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})component_compile_options(-ffast-math -O3 -Wno-error=format=-Wno-format)===== components/BSP/RS485/rs485.h =====#ifndef"
+                    - strong [ref=e1488]: RS485_H
+                    - text: "#define"
+                    - strong [ref=e1489]: RS485_H
+                    - text: "#include \"driver/uart.h\"#include \"driver/gpio.h\"#include \"freertos/FreeRTO"
+                - generic [ref=e1490]:
+                  - button "思考" [ref=e1494] [cursor=pointer]
+                  - generic [ref=e1496]:
+                    - button "开始听写" [ref=e1497] [cursor=pointer]
+                    - button "停止回答" [ref=e1498] [cursor=pointer]
+              - button [ref=e1501]
+              - button [ref=e1502]
+  - alert [ref=e136]
+  - status [ref=e137]

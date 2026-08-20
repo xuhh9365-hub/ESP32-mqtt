@@ -1,0 +1,67 @@
+- generic [ref=e1]:
+  - link "跳至内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - navigation "侧边栏":
+        - generic:
+          - generic:
+            - generic:
+              - button "打开边栏"
+        - generic:
+          - generic:
+            - link "新聊天":
+              - /url: /
+          - generic:
+            - button "搜索"
+          - generic:
+            - button "最近聊天"
+        - generic:
+          - generic:
+            - button "打开“个人资料”菜单"
+      - generic [ref=e9]:
+        - heading "历史聊天记录" [level=2] [ref=e10]
+        - generic [ref=e11]:
+          - navigation "历史聊天记录" [ref=e12]:
+            - generic [ref=e15]:
+              - link "主页" [ref=e16] [cursor=pointer]:
+                - /url: /
+                - generic [ref=e17]: ChatGPT
+              - generic [ref=e18]:
+                - button "搜索" [ref=e19] [cursor=pointer]
+                - button "关闭边栏" [expanded] [ref=e22]
+            - list [ref=e26]:
+              - listitem [ref=e27]:
+                - link "新聊天" [ref=e28] [cursor=pointer]:
+                  - /url: /
+              - listitem
+            - link "图片" [ref=e35] [cursor=pointer]:
+              - /url: /images
+            - link "文件库" [ref=e42] [cursor=pointer]:
+              - /url: /library?entry_point=sidebar
+            - link "插件" [ref=e49] [cursor=pointer]:
+              - /url: /plugins
+            - generic [ref=e56]: 更多
+          - button "xu hh 免费版，打开“个人资料”菜单" [ref=e67] [cursor=pointer]:
+            - generic [ref=e71]:
+              - generic [ref=e72]: xu hh
+              - generic [ref=e74]: 免费版
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - banner:
+          - button "临时聊天" [ref=e88] [cursor=pointer]
+      - main [ref=e95]:
+        - generic [ref=e97]:
+          - heading "准备好了，随时开始" [level=1] [ref=e105]
+          - generic [ref=e114]:
+            - generic [ref=e117]:
+              - button "添加文件等" [ref=e120] [cursor=pointer]
+              - textbox "与 ChatGPT 聊天" [active] [ref=e123]:
+                - /placeholder: 有问题，随便问
+              - generic [ref=e124]:
+                - button "思考" [ref=e128] [cursor=pointer]
+                - button "发送提示" [disabled] [ref=e131]
+            - button [disabled] [ref=e134]
+            - button [disabled] [ref=e135]
+  - alert [ref=e136]
+  - status [ref=e137]
