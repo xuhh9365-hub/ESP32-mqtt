@@ -1,3 +1,15 @@
-idf_component_register(SRCS "config_manager.c" "config_parser.c"
-                    INCLUDE_DIRS "include" "."
-                    REQUIRES json)
+idf_component_register(
+    SRCS
+        "config_storage.c"
+        "config_validator.c"
+        "config_manager.c"
+        "config_parser.c"
+    INCLUDE_DIRS
+        "include"
+        "."
+    REQUIRES
+        json
+        nvs_flash
+        esp_timer
+        esp_rom
+)

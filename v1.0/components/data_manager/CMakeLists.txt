@@ -1,0 +1,16 @@
+idf_component_register(
+    SRCS
+        "data_manager.c"
+        "data_queue.c"
+        "data_lvc.c"
+        "data_formatter.c"
+        "data_sink.c"
+    INCLUDE_DIRS
+        "include"
+        "."
+    REQUIRES
+        sensor_types
+        json
+        freertos
+        esp_timer
+)

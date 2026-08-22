@@ -114,16 +114,16 @@ typedef struct {
     uint16_t humi_limit;
 } __attribute__((packed)) holding_reg_params_t;
 
-// 网关应用层数据结构体
+// 网关兼容层数据结构体 (旧版 Demo)
 typedef struct {
     float    temperature;
     float    humidity;
     uint16_t status;
     float    temp_limit;
     float    humi_limit;
-} gateway_data_t;
+} modbus_legacy_data_t;
 
-esp_err_t modbus_master_read_all(gateway_data_t *out_data);
+esp_err_t modbus_master_read_all(modbus_legacy_data_t *out_data);
 esp_err_t modbus_master_write_temp_limit(float limit);
 esp_err_t modbus_master_write_humi_limit(float limit);
 esp_err_t modbus_master_write_status(uint16_t status);

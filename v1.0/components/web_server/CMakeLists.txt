@@ -1,17 +1,17 @@
 idf_component_register(
     SRCS
-        "device_manager.c"
-        "device_scheduler.c"
-        "device_hot_reload.c"
+        "web_server.c"
+        "web_static_pages.c"
     INCLUDE_DIRS
         "include"
         "."
     REQUIRES
-        sensor_types
-        data_convert
+        esp_http_server
+        json
         config_manager
         data_manager
-        freertos
+        mqtt_sink
         BSP
         esp_timer
+        freertos
 )

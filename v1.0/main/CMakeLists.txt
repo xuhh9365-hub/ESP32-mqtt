@@ -1,2 +1,20 @@
-idf_component_register(SRCS "main.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(
+    SRCS
+        "main.c"
+        "device_manager_test.c"
+        "device_manager_hot_reload_test.c"
+        "data_manager_test.c"
+        "mqtt_sink_test.c"
+        "config_apply_test.c"
+    INCLUDE_DIRS
+        "."
+    REQUIRES
+        web_server
+        config_manager
+        device_manager
+        data_manager
+        mqtt_sink
+        control_manager
+        debug_sink
+        BSP
+)

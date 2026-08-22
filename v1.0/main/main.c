@@ -4,58 +4,18 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "led.h"
-#include "modbus.h"
 #include "config_manager.h"
+#include "data_manager.h"
+#include "debug_sink.h"
+#include "mqtt_sink.h"
+#include "modbus.h"
 #include "device_manager.h"
-#include "WIFI_sta.h"
-#include "MQTT_CLIENT_APP.h"
-#include "cJSON.h"
+#include "control_manager.h"
+#include "web_server.h"
+#include "wifi_sta.h"
+#include "device_manager_test.h"
 
 static const char *TAG = "APP_MAIN";
-
-/* ========================================================================= */
-/*                   1. MQTT 云端下行控制指令处理回调                        */
-/* ========================================================================= */
-
-static void on_mqtt_control_received(const char *topic, int topic_len, const char *data, int data_len)
-{
-    static const char *TW = "CONTROL";
-
-    // 判断是否是发往控制主题的消息
-    if (strncmp(topic, MQTT_TOPIC_CONTROL, topic_len) == 0) 
-    {
-        ESP_LOGI(TW, "收到云端控制指令: %.*s", data_len, data);
-        cJSON *root = cJSON_ParseWithLength(data, data_len);
-        if (root == NULL) {
-            ESP_LOGE(TW, "JSON 格式解析失败");
-            return;
-        }
-
-        // 1. 如果包含 temp_limit 字段，写入 Modbus 温度上限 (后续阶段将迁移至 device_manager)
-        cJSON *item_temp = cJSON_GetObjectItem(root, "temp_limit");
-        if (cJSON_IsNumber(item_temp)) {
-            modbus_master_write_temp_limit((float)item_temp->valuedouble);
-        }
-
-        // 2. 如果包含 humi_limit 字段，写入 Modbus 湿度下限
-        cJSON *item_humi = cJSON_GetObjectItem(root, "humi_limit");
-        if (cJSON_IsNumber(item_humi)) {
-            modbus_master_write_humi_limit((float)item_humi->valuedouble);
-        }
-
-        // 3. 如果包含 status 字段，写入 Modbus 设备状态
-        cJSON *item_status = cJSON_GetObjectItem(root, "status");
-        if (cJSON_IsNumber(item_status)) {
-            modbus_master_write_status((uint16_t)item_status->valueint);
-        }
-
-        cJSON_Delete(root);
-    }
-}
-
-/* ========================================================================= */
-/*                   2. 系统状态指示任务 (LED 心跳灯)                        */
-/* ========================================================================= */
 
 static void LED_task(void *pvParameters)
 {
@@ -66,131 +26,52 @@ static void LED_task(void *pvParameters)
     }
 }
 
-/* ========================================================================= */
-/*                   3. 旧版本测试任务兼容区 (默认禁用，保留供回滚)          */
-/* ========================================================================= */
-
-// #define ENABLE_LEGACY_MODBUS_TASK
-
-#ifdef ENABLE_LEGACY_MODBUS_TASK
-static QueueHandle_t sensor1_queue = NULL;
-
-static void modbus_task(void *pvParameters)
-{
-    gateway_data_t data = {0};
-    int consecutive_fail = 0;
-
-    while (1)
-    {
-        if (modbus_master_read_all(&data) == ESP_OK) {
-            consecutive_fail = 0;
-            printf("\n--- 从站数据 ---\n");
-            printf("温度: %.1f ℃\n", data.temperature);
-            printf("湿度: %.1f %%\n", data.humidity);
-            printf("状态: %d\n", data.status);
-            printf("温度上限: %.1f ℃\n", data.temp_limit);
-            printf("湿度下限: %.1f %%\n", data.humi_limit);
-
-            BaseType_t status = xQueueSend(sensor1_queue, &data, 0);
-            if (status != pdPASS) {
-                ESP_LOGW("queue", "Queue full, failed to send data");
-            }
-        } else {
-            consecutive_fail++;
-            if (consecutive_fail >= 3) {
-                printf("⚠️ 从站可能已断线（连续 %d 轮失败）\n", consecutive_fail);
-            } else {
-                printf("读取从站失败 (%d/3)\n", consecutive_fail);
-            }
-        }
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-}
-
-static void MQTT_task(void *pvParameters)
-{
-    gateway_data_t data = {0};
-
-    while (1)
-    {
-        if (xQueueReceive(sensor1_queue, &data, portMAX_DELAY) == pdPASS)
-        {
-            if (mqtt_app_is_connected())
-            {
-                char payload[128];
-                snprintf(payload, sizeof(payload),
-                        "{\"temperature\":%.1f,\"humidity\":%.1f,\"status\":%d,\"temp_limit\":%.2f,\"humi_limit\":%.2f}",
-                        data.temperature, data.humidity, data.status, data.temp_limit, data.humi_limit);
-                mqtt_app_publish(MQTT_TOPIC_SENSOR, payload, 1);
-            }
-        }
-    }
-}
-#endif
-
-/* ========================================================================= */
-/*                   4. 系统入口函数 app_main                                */
-/* ========================================================================= */
-
 void app_main(void)
 {
-    ESP_LOGI(TAG, "================ ESP32-S3 工业网关启动 ================");
+    ESP_LOGI(TAG, "================ ESP32-S3 工业网关启动 (全链路云边端协同) ================");
 
-    // 1. 基础硬件外设初始化
+    // 1. 基础硬件指示灯初始化
     led_init();
     xTaskCreate(LED_task, "LED_task", 2048, NULL, 1, NULL);
 
-    // 2. 配置管理系统初始化 (加载内置默认配置与设备列表)
-    esp_err_t ret = config_manager_init();
+    // 2. 配置管理系统初始化 (加载内置默认配置、测点映射与设备列表)
+    config_manager_init();
+
+    // 3. 数据出口管理中枢初始化并启动
+    data_manager_init();
+    data_manager_start();
+
+    // 4. 注册本地调试出口 Debug Sink
+    debug_sink_init();
+
+    // 5. 通用 Modbus Master 协议栈初始化 (波特率 115200)
+    modbus_master_init();
+
+    // 6. 设备管理器初始化并启动集中式采集调度 (modbus_sched_task)
+    device_manager_init();
+    device_manager_start();
+
+    // 7. 下行控制中枢初始化并启动异步工作者任务 (control_task)
+    control_manager_init();
+    control_manager_start();
+
+    // 8. 启动网络连接 (WiFi STA 模式)
+    esp_err_t ret = wifi_sta_init();
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "配置管理器初始化失败: %s", esp_err_to_name(ret));
-        return;
+        ESP_LOGW(TAG, "WiFi 连接失败，系统将在离线模式下继续运行设备数据采集与本地缓存");
     }
 
-    // 3. 通用 Modbus Master 协议栈初始化 (波特率 115200)
-    ret = modbus_master_init();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Modbus Master 协议栈初始化失败: %s", esp_err_to_name(ret));
-        return;
-    }
+    // 9. 启动本地 HTTP Web 配置服务器 (端口 80, 提供监控看板与 REST API)
+    web_server_init();
 
-    // 4. 设备管理器初始化 (根据 config_manager 实例化运行态设备)
-    ret = device_manager_init();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "设备管理器初始化失败: %s", esp_err_to_name(ret));
-        return;
-    }
+    // 10. 启动 MQTT Sink 适配器 (向 data_manager 注册 Sink 并启动后台发布任务)
+    mqtt_sink_config_t mqtt_cfg = {
+        .broker_uri = "mqtt://192.168.0.7:1883",
+        .topic      = "gateway/esp32_gateway_001/telemetry",
+        .client_id  = "esp32_gateway_001"
+    };
+    mqtt_sink_init(&mqtt_cfg);
+    mqtt_sink_start();
 
-    // 5. 启动集中式 Modbus 采集调度器 (modbus_scheduler_task)
-    ret = device_manager_start();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "启动 Modbus Scheduler 调度器失败: %s", esp_err_to_name(ret));
-        return;
-    }
-
-#ifdef ENABLE_LEGACY_MODBUS_TASK
-    // 旧版本测试轮询任务 (已宏隔离，默认不运行)
-    sensor1_queue = xQueueCreate(1, sizeof(gateway_data_t));
-    if (sensor1_queue != NULL) {
-        xTaskCreate(modbus_task, "modbus_task", 4096, NULL, 4, NULL);
-        xTaskCreate(MQTT_task, "MQTT_task", 4096, NULL, 3, NULL);
-    }
-#endif
-
-    // 6. 网络连接初始化 (WiFi STA 模式，内部包含 NVS Flash 初始化)
-    ret = wifi_sta_init();
-    if (ret != ESP_OK) {
-        ESP_LOGW(TAG, "WiFi 连接失败，系统将在离线模式下继续运行设备数据采集");
-    } else {
-        // 7. MQTT 客户端启动与下行控制回调注册
-        ret = mqtt_app_start();
-        if (ret == ESP_OK) {
-            mqtt_app_set_data_callback(on_mqtt_control_received);
-            ESP_LOGI(TAG, "MQTT 客户端启动成功并已注册控制主题回调");
-        } else {
-            ESP_LOGW(TAG, "MQTT 启动超时或失败，将在后台重试连接");
-        }
-    }
-
-    ESP_LOGI(TAG, "================ 网关所有核心服务已就绪 ================");
+    ESP_LOGI(TAG, "================ 工业网关核心服务全链路已就绪 ================");
 }

@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 工业网关边缘管理平台</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 Header -->
+    <header class="header">
+      <div class="header-title">
+        <h1>🌐 ESP32 工业网关边缘管理平台</h1>
+        <p>基于 FreeRTOS + Modbus Master + NVS 配置热重载架构</p>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-ok" id="header-wifi-badge">WiFi: 连接中...</span>
+        <span class="badge badge-ok" id="header-mqtt-badge">MQTT: 连接中...</span>
+        <span class="badge" id="header-uptime-badge">运行: 00:00:00</span>
+      </div>
+    </header>
+
+    <!-- 选项卡 Tabs -->
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="dashboard">📊 实时监控</button>
+      <button class="tab-btn" data-tab="config">⚙️ 设备配置管理</button>
+      <button class="tab-btn" data-tab="status">ℹ️ 系统状态</button>
+    </nav>
+
+    <!-- Tab 1: 实时监控 Dashboard -->
+    <section id="tab-dashboard" class="tab-panel active">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:16px;color:var(--text-muted);">● Modbus 现场总线实时遥测与数字孪生快照 (1.5s 自动刷新)</h2>
+        <button class="btn btn-secondary btn-sm" onclick="refreshTelemetrySnapshot()">⟳ 立即刷新</button>
+      </div>
+      <div class="grid" id="telemetry-cards-container">
+        <div class="card" style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:32px;">
+          ⏳ 正在加载现场设备遥测数据...
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: 设备配置管理 Config Manager -->
+    <section id="tab-config" class="tab-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 style="font-size:16px;color:var(--text-main);display:inline;">Modbus 从站采集节点配置表</h2>
+          <span class="badge badge-ok" id="config-version-badge" style="margin-left:8px;">v1</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="openAddDeviceModal()">➕ 添加 Modbus 设备</button>
+          <button class="btn btn-secondary" onclick="loadAndRenderConfigTable()">⟳ 刷新配置</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>设备名称</th>
+              <th>从站 ID</th>
+              <th>采集寄存器与类型</th>
+              <th>数据类型 (倍率)</th>
+              <th>采样周期</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="config-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">⏳ 正在读取 NVS 与 RAM 运行态配置...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab 3: 系统状态 System Status -->
+    <section id="tab-status" class="tab-panel">
+      <div class="grid">
+        <div class="card">
+          <div class="card-header">
+            <h2>网关核心硬件与固件</h2>
+          </div>
+          <div class="metric-row"><span class="metric-name">网关唯一标识 (ID)</span><span class="metric-val" id="stat-gw-id">--</span></div>
+          <div class="metric-row"><span class="metric-name">固件固化版本</span><span class="metric-val" id="stat-fw-ver">--</span></div>
+          <div class="metric-row"><span class="metric-name">NVS 配置生效版本</span><span class="metric-val" id="stat-cfg-ver">--</span></div>
+          <div class="metric-row"><span class="metric-name">系统持续运行时间</span><span class="metric-val" id="stat-uptime">--</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>内存与网络连接状态</h2>
+          </div>
+          <div class="metric-row"><span class="metric-name">动态堆内存 (Free Heap)</span><span class="metric-val" id="stat-heap">--</span></div>
+          <div class="metric-row"><span class="metric-name">WiFi 连接状态 (STA)</span><span class="metric-val" id="stat-wifi">--</span></div>
+          <div class="metric-row"><span class="metric-name">MQTT 物模型出口</span><span class="metric-val" id="stat-mqtt">--</span></div>
+          <div class="metric-row"><span class="metric-name">FreeRTOS 调度器</span><span class="metric-val">🟢 运行中</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 添加 / 编辑设备弹窗 Modal -->
+  <div class="modal-overlay" id="device-modal">
+    <div class="modal-box">
+      <h2 class="modal-title" id="modal-device-title">➕ 添加 Modbus 设备</h2>
+      
+      <div class="form-group">
+        <label class="form-label">设备标识名称 (唯一 Name)</label>
+        <input type="text" id="dev-form-name" class="form-control" placeholder="例如: pressure_sensor_v2">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">从站地址 (Slave ID: 1~247)</label>
+          <input type="number" id="dev-form-slave" class="form-control" min="1" max="247" value="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">采集周期 (Period: 50~60000 ms)</label>
+          <input type="number" id="dev-form-period" class="form-control" min="50" max="60000" step="50" value="1000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">寄存器起始地址 (0~65535)</label>
+          <input type="number" id="dev-form-addr" class="form-control" min="0" max="65535" value="16">
+        </div>
+        <div class="form-group">
+          <label class="form-label">寄存器类型 (Register Type)</label>
+          <select id="dev-form-regtype" class="form-control">
+            <option value="holding">Holding Register (保持寄存器 0x03)</option>
+            <option value="input">Input Register (输入寄存器 0x04)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">数据类型 (Data Type)</label>
+          <select id="dev-form-datatype" class="form-control">
+            <option value="uint16">uint16 (无符号 16位)</option>
+            <option value="int16">int16 (有符号 16位)</option>
+            <option value="float">float (32位 浮点数)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">换算倍率 (Scale)</label>
+          <input type="number" id="dev-form-scale" class="form-control" step="0.001" value="0.1">
+        </div>
+      </div>
+
+      <div id="check-result-box" style="margin-top:12px;padding:10px;border-radius:6px;background:#162032;border:1px solid var(--border-color);font-size:13px;display:none;"></div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeDeviceModal()">取消</button>
+        <button class="btn btn-secondary" onclick="onTestConfigClick()" style="border:1px solid var(--accent-cyan);color:var(--accent-cyan);">🧪 测试配置 (Check)</button>
+        <button class="btn btn-primary" onclick="onSaveConfigClick()">💾 保存并应用 (Apply)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认弹窗 Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal-box" style="max-width:400px;">
+      <h2 class="modal-title" style="color:var(--accent-rose);">⚠️ 确认删除设备</h2>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px;">
+        确定要从网关中删除设备 <strong id="delete-target-name" style="color:#fff;"></strong> 吗？<br><br>
+        删除后调度器将立即平滑停止该节点的 Modbus 采集，并同步从 NVS 持久化存储中移除。
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+        <button class="btn btn-danger" onclick="onConfirmDeleteDevice()">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全局 Toast 提示 -->
+  <div class="alert-toast" id="alert-toast"></div>
+
+  <!-- 脚本加载 -->
+  <script src="/api.js"></script>
+  <script src="/config_editor.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

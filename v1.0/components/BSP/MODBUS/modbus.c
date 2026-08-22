@@ -280,7 +280,7 @@ esp_err_t modbus_master_write_multiple_registers(uint8_t slave_id,
 /*                   3. 兼容旧版本业务 API (路由到新通用接口)                 */
 /* ========================================================================= */
 
-esp_err_t modbus_master_read_all(gateway_data_t *out_data)
+esp_err_t modbus_master_read_all(modbus_legacy_data_t *out_data)
 {
     if (out_data == NULL) {
         return ESP_ERR_INVALID_ARG;

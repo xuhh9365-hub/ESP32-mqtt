@@ -1,0 +1,14 @@
+idf_component_register(
+    SRCS
+        "mqtt_sink.c"
+    INCLUDE_DIRS
+        "include"
+        "."
+    REQUIRES
+        mqtt
+        data_manager
+        sensor_types
+        control_manager
+        freertos
+        esp_event
+)

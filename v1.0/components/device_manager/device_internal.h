@@ -3,45 +3,34 @@
 
 #include "device_manager.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "freertos/task.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define DEVICE_CONSECUTIVE_FAIL_LIMIT   3       /* 判定离线的连续通信失败门限 */
 
 /**
- * @brief 设备管理器全局运行上下文
+ * @brief device_manager 全局内部上下文 (双互斥锁分离架构)
  */
 typedef struct {
-    device_instance_t   instances[DEVICE_MANAGER_MAX_DEVICES]; /* 运行态设备实例表 */
-    uint8_t             device_count;                          /* 有效实例总数 */
-    bool                is_initialized;                        /* 初始化标志 */
-    bool                is_running;                            /* 调度运行标志 */
-    TaskHandle_t        scheduler_task_handle;                 /* 调度器任务句柄 */
-    SemaphoreHandle_t   lock;                                  /* 实例表访问互斥锁 */
+    bool                is_running;                             /* 调度器运行状态 */
+    TaskHandle_t        scheduler_task_handle;                  /* 调度器任务句柄 */
+    SemaphoreHandle_t   instance_lock;                          /* 专职保护 instances[] 结构体内存 (< 1μs) */
+    SemaphoreHandle_t   bus_lock;                               /* 专职保护 RS485 物理总线排他访问 (20~200ms) */
+    device_instance_t   instances[DEVICE_MANAGER_MAX_DEVICES];  /* 设备运行态实例池 */
+    uint8_t             device_count;                           /* 当前有效设备数 */
+    uint32_t            bus_wait_count;                         /* 累计总线请求次数 */
+    uint32_t            bus_timeout_count;                      /* 累计总线超时次数 */
+    volatile bool       is_bus_busy;                            /* 当前物理总线收发标志 */
 } device_manager_context_t;
 
 /**
- * @brief 获取内部上下文单例指针
+ * @brief 获取全局上下文指针
  */
 device_manager_context_t *device_manager_get_context(void);
 
 /**
- * @brief 集中式 Modbus 采集调度器任务入口函数
+ * @brief 集中式 Modbus 轮询调度器任务主入口
  */
 void device_scheduler_task(void *pvParameters);
-
-/**
- * @brief 数据处理层接口占位钩子 (供未来对接 data_process 模块)
- * 
- * @param config 设备静态配置
- * @param raw_value 采集到的原始寄存器数值
- */
-void data_process_handle_raw_data(const device_config_t *config, uint16_t raw_value);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __DEVICE_INTERNAL_H__ */

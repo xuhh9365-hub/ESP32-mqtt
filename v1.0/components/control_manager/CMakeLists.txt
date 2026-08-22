@@ -1,0 +1,16 @@
+idf_component_register(
+    SRCS
+        "control_manager.c"
+        "control_task.c"
+        "control_parser.c"
+        "control_response.c"
+    INCLUDE_DIRS
+        "include"
+        "."
+    REQUIRES
+        sensor_types
+        device_manager
+        json
+        freertos
+        esp_timer
+)

@@ -24,8 +24,8 @@ static esp_err_t validate_device_config(const device_config_t *dev)
         ESP_LOGE(TAG, "设备 [%s] 倍率 scale 不能为 0", dev->name);
         return ESP_ERR_INVALID_ARG;
     }
-    if (dev->period < 100) {
-        ESP_LOGE(TAG, "设备 [%s] 采集周期过小: %lu ms (至少需 >= 100ms)", dev->name, (unsigned long)dev->period);
+    if (dev->period < 50 || dev->period > 60000) {
+        ESP_LOGE(TAG, "设备 [%s] 采集周期非法: %lu ms (必须在 50~60000ms 之间)", dev->name, (unsigned long)dev->period);
         return ESP_ERR_INVALID_ARG;
     }
     return ESP_OK;
@@ -47,6 +47,7 @@ static esp_err_t parse_single_device(const cJSON *dev_item, device_config_t *out
     strncpy(out_dev->data_type, "uint16", sizeof(out_dev->data_type) - 1);
     out_dev->scale = 1.0f;
     out_dev->period = 1000;
+    out_dev->metric_count = 0;
 
     // 1. name
     cJSON *item_name = cJSON_GetObjectItem(dev_item, "name");
@@ -60,6 +61,10 @@ static esp_err_t parse_single_device(const cJSON *dev_item, device_config_t *out
     // 2. slave_id
     cJSON *item_slave = cJSON_GetObjectItem(dev_item, "slave_id");
     if (cJSON_IsNumber(item_slave)) {
+        if (item_slave->valueint < 1 || item_slave->valueint > 247) {
+            ESP_LOGE(TAG, "设备 [%s] 从站地址非法: %d (必须在 1 ~ 247 范围内)", out_dev->name, item_slave->valueint);
+            return ESP_ERR_INVALID_ARG;
+        }
         out_dev->slave_id = (uint8_t)item_slave->valueint;
     } else {
         ESP_LOGE(TAG, "设备 [%s] 缺少 'slave_id'", out_dev->name);
@@ -77,8 +82,9 @@ static esp_err_t parse_single_device(const cJSON *dev_item, device_config_t *out
         if (cJSON_IsString(item_rtype) && item_rtype->valuestring != NULL) {
             strncpy(out_dev->reg_type, item_rtype->valuestring, sizeof(out_dev->reg_type) - 1);
         }
+    } else if (cJSON_IsNumber(item_reg)) {
+        out_dev->register_addr = (uint16_t)item_reg->valueint;
     } else {
-        // 兼容扁平字段
         cJSON *item_addr = cJSON_GetObjectItem(dev_item, "address");
         if (cJSON_IsNumber(item_addr)) {
             out_dev->register_addr = (uint16_t)item_addr->valueint;
@@ -97,7 +103,6 @@ static esp_err_t parse_single_device(const cJSON *dev_item, device_config_t *out
             out_dev->scale = (float)item_scale->valuedouble;
         }
     } else {
-        // 兼容扁平字段
         cJSON *item_scale = cJSON_GetObjectItem(dev_item, "scale");
         if (cJSON_IsNumber(item_scale)) {
             out_dev->scale = (float)item_scale->valuedouble;
@@ -108,6 +113,52 @@ static esp_err_t parse_single_device(const cJSON *dev_item, device_config_t *out
     cJSON *item_period = cJSON_GetObjectItem(dev_item, "period");
     if (cJSON_IsNumber(item_period)) {
         out_dev->period = (uint32_t)item_period->valueint;
+    }
+
+    // 6. metrics 数组解析
+    cJSON *item_metrics = cJSON_GetObjectItem(dev_item, "metrics");
+    if (cJSON_IsArray(item_metrics)) {
+        int m_size = cJSON_GetArraySize(item_metrics);
+        if (m_size > CONFIG_MAX_METRICS_PER_DEVICE) {
+            m_size = CONFIG_MAX_METRICS_PER_DEVICE;
+        }
+        for (int i = 0; i < m_size; i++) {
+            cJSON *m_item = cJSON_GetArrayItem(item_metrics, i);
+            if (cJSON_IsObject(m_item)) {
+                device_metric_config_t *m_cfg = &out_dev->metrics[out_dev->metric_count];
+                memset(m_cfg, 0, sizeof(device_metric_config_t));
+                m_cfg->scale = 1.0f;
+                m_cfg->min_value = 0.0f;
+                m_cfg->max_value = 65535.0f;
+
+                cJSON *m_name = cJSON_GetObjectItem(m_item, "name");
+                if (cJSON_IsString(m_name) && m_name->valuestring != NULL) {
+                    strncpy(m_cfg->metric_name, m_name->valuestring, CONFIG_METRIC_NAME_MAX_LEN - 1);
+                }
+
+                cJSON *m_wreg = cJSON_GetObjectItem(m_item, "write_register");
+                if (cJSON_IsNumber(m_wreg)) {
+                    m_cfg->write_register = (uint16_t)m_wreg->valueint;
+                }
+
+                cJSON *m_scale = cJSON_GetObjectItem(m_item, "scale");
+                if (cJSON_IsNumber(m_scale)) {
+                    m_cfg->scale = (float)m_scale->valuedouble;
+                }
+
+                cJSON *m_min = cJSON_GetObjectItem(m_item, "min");
+                if (cJSON_IsNumber(m_min)) {
+                    m_cfg->min_value = (float)m_min->valuedouble;
+                }
+
+                cJSON *m_max = cJSON_GetObjectItem(m_item, "max");
+                if (cJSON_IsNumber(m_max)) {
+                    m_cfg->max_value = (float)m_max->valuedouble;
+                }
+
+                out_dev->metric_count++;
+            }
+        }
     }
 
     return validate_device_config(out_dev);
@@ -158,7 +209,9 @@ esp_err_t config_parser_parse_json(const char *json_str,
             memcpy(&out_devices[valid_cnt], &temp_dev, sizeof(device_config_t));
             valid_cnt++;
         } else {
-            ESP_LOGW(TAG, "跳过解析失败的第 %d 个设备项", i + 1);
+            ESP_LOGE(TAG, "第 %d 个设备项解析校验失败 (%s)", i + 1, esp_err_to_name(ret));
+            cJSON_Delete(root);
+            return ret; // 严格模式: 任一设备非法直接失败
         }
     }
 
@@ -204,6 +257,20 @@ esp_err_t config_parser_serialize_json(const device_config_t *devices,
         cJSON_AddItemToObject(dev_item, "data", data_obj);
 
         cJSON_AddNumberToObject(dev_item, "period", devices[i].period);
+
+        if (devices[i].metric_count > 0) {
+            cJSON *m_arr = cJSON_CreateArray();
+            for (int m = 0; m < devices[i].metric_count; m++) {
+                cJSON *m_obj = cJSON_CreateObject();
+                cJSON_AddStringToObject(m_obj, "name", devices[i].metrics[m].metric_name);
+                cJSON_AddNumberToObject(m_obj, "write_register", devices[i].metrics[m].write_register);
+                cJSON_AddNumberToObject(m_obj, "scale", devices[i].metrics[m].scale);
+                cJSON_AddNumberToObject(m_obj, "min", devices[i].metrics[m].min_value);
+                cJSON_AddNumberToObject(m_obj, "max", devices[i].metrics[m].max_value);
+                cJSON_AddItemToArray(m_arr, m_obj);
+            }
+            cJSON_AddItemToObject(dev_item, "metrics", m_arr);
+        }
 
         cJSON_AddItemToArray(devices_arr, dev_item);
     }

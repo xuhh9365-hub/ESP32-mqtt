@@ -1,0 +1,9 @@
+idf_component_register(
+    SRCS
+        "debug_sink.c"
+    INCLUDE_DIRS
+        "include"
+    REQUIRES
+        data_manager
+        sensor_types
+)
